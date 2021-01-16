@@ -1,0 +1,78 @@
+﻿<Window x:Class="BlackJackApp.View.BlackJackWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlackJackApp"
+        mc:Ignorable="d"
+        Title="BlackJackWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel x:Name="MainPanel">
+            <Label Content="BlackJack - 21" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="10"/>
+            <DockPanel>
+                <StackPanel x:Name="ChipsPanel" HorizontalAlignment="Left" Margin="5">
+                    <TextBlock Text="Total chips:" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Path=User.Chips.Total, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+                <StackPanel x:Name="BetPanel" HorizontalAlignment="Left" Margin="5">
+                    <TextBlock Text="Current Bet" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Path=CurrentBet, UpdateSourceTrigger=LostFocus}" 
+                             PreviewKeyDown="UIElement_OnPreviewKeyDown"/>
+                </StackPanel>
+            </DockPanel>
+            <Grid Margin="10" Height="150">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer Grid.Column="1">
+                    <TextBlock x:Name="GameInfoTextBlock"
+                               Text="{Binding Path=GameInfo}"
+                               TextAlignment="Center"/>
+                </ScrollViewer>
+                <ScrollViewer Grid.Column="0">
+                    <TextBlock x:Name="PlayerCards"
+                               Text="PlayerCards"
+                               TextAlignment="Center"/>
+                </ScrollViewer>
+                <ScrollViewer Grid.Column="2">
+                    <TextBlock x:Name="DealerCards"
+                               Text="DealerCards"
+                               TextAlignment="Center"/>
+                </ScrollViewer>
+            </Grid>
+            <DockPanel>
+                <StackPanel HorizontalAlignment="Left">
+                    <Label Content="Player's Hand:" FontWeight="Bold"/>
+                    <TextBlock x:Name="UserCards" Text="{Binding Path=PlayerHandValue, UpdateSourceTrigger=PropertyChanged}"
+                               Margin="5,5,5,5"
+                               Width="50"
+                               Height="20"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right">
+                    <Label Content="Dealer's Hand:" FontWeight="Bold"/>
+                    <TextBlock x:Name="DealerXCards" Text="{Binding Path=DealerHandValue}"
+                               Margin="5,5,5,5"
+                               Width="50"
+                               Height="20"/>
+                </StackPanel>
+            </DockPanel>
+            <DockPanel HorizontalAlignment="Center">
+                <Button x:Name="HitBtn"
+                        Content="Hit"
+                        Margin="5,5,5,5"
+                        Height="50" Width="50"
+                        Command="{Binding Path=HitCommand}"
+                        IsEnabled="{Binding Path=HitAndStandEnable}"/>
+                <Button x:Name="StandBtn"
+                        Content="Stand"
+                        Margin="5,5,5,5"
+                        Height="50" Width="50"
+                        Command="{Binding Path=StandCommand}" 
+                        IsEnabled="{Binding Path=HitAndStandEnable}"/>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Window>
