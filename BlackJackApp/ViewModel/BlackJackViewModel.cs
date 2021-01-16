@@ -20,6 +20,8 @@ namespace BlackJackApp.ViewModel
 
         private bool _isDealerTurn;
 
+
+
         private Deck _deck;
         public Deck Deck
         {
@@ -100,6 +102,21 @@ namespace BlackJackApp.ViewModel
             }
         }
 
+        private string _totalChips;
+        public string TotalChips
+        {
+            get => _totalChips;
+            set
+            {
+                _totalChips = value;
+                if (value == "0")
+                {
+                    GameOver();
+                }
+                OnPropertyChanged(nameof(TotalChips));
+            }
+        }
+
         private bool _hitAndStandEnable;
         public bool HitAndStandEnable
         {
@@ -149,8 +166,14 @@ namespace BlackJackApp.ViewModel
         {
             _isDealerTurn = false;
             HitAndStandEnable = false;
-            AddGameInfoText(GameStrings.BetRequest);
             CurrentBet = "0";
+            TotalChips = User.Chips.Total.ToString();
+
+            if (User.Chips.Total > 0)
+            {
+                AddGameInfoText(GameStrings.BetRequest);
+            }
+            
             CardsDistribution();
             if (BustOrBlackJack(User))
             {
@@ -486,6 +509,14 @@ namespace BlackJackApp.ViewModel
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Game ends.
+        /// </summary>
+        public void GameOver()
+        {
+            SetGameInfoText(GameStrings.GameOver);
         }
 
         #endregion

@@ -79,6 +79,11 @@ namespace BlackJackApp.Utils
         /// <param name="player"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string Push(Player player, int value) => $"Dealer and {player.Name} reached to {value}.";
+        public static string Push(Player player, int value) => $"Push!! Dealer and {player.Name} reached to {value}.";
+
+        /// <summary>
+        /// Game over.
+        /// </summary>
+        public static string GameOver => "You lost all of your chips.\nGAME OVER!!!";
     }
 }

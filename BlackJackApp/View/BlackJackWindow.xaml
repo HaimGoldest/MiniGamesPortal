@@ -12,7 +12,7 @@
             <DockPanel>
                 <StackPanel x:Name="ChipsPanel" HorizontalAlignment="Left" Margin="5">
                     <TextBlock Text="Total chips:" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Path=User.Chips.Total, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="{Binding Path=TotalChips, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel x:Name="BetPanel" HorizontalAlignment="Left" Margin="5">
                     <TextBlock Text="Current Bet" FontWeight="Bold"/>
