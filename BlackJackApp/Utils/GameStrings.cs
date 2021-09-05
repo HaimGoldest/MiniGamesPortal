@@ -12,12 +12,12 @@ namespace BlackJackApp.Utils
         /// Open statement for the game.
         /// </summary>
         public static string OpenStatement => "Welcome to BlackJack - 21!\nGet as close to 21 as you can without going over!\n" +
-                                              "Dealer hits until she reaches 17.\nAces count as 1 or 11.";
+                                              "Dealer hits until she reaches 17.\nIn case of a tie the dealer wins.\nAces count as 1 or 11.";
 
         /// <summary>
         /// Request for a bet.
         /// </summary>
-        public static string BetRequest => "How many chips would you like to bet?";
+        public static string BetRequest => "\nHow many chips would you like to bet?\n";
 
         /// <summary>
         /// Bet amount changed.
@@ -63,14 +63,14 @@ namespace BlackJackApp.Utils
         public static string DealerCardsValue(int value) => $"Dealer hand reached to {value}.";
 
         /// <summary>
-        /// Header of show dealer cards.
+        /// Dealer cards header.
         /// </summary>
-        public static string ShowDealerCardsHeader => "Dealer cards:\n";
+        public static string DealerCardsHeader => "Dealer cards:\n";
 
         /// <summary>
-        /// Show card.
+        /// Show card information in "Game Info".
         /// </summary>
-        public static string ShowCard(Player player, Card card) => $"{player.Name} received " +
+        public static string NewCardInfo(Player player, Card card) => $"{player.Name} received " +
                                                                    $"{card.Suit} {card.Rank} card.";
 
         /// <summary>

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BlackJackApp"
+        xmlns:local="clr-namespace:BlackJackApp" xmlns:viewmodel="clr-namespace:BlackJackApp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:BlackJackViewModel}"
         mc:Ignorable="d"
         Title="BlackJackWindow" Height="450" Width="800">
     <Grid>
@@ -17,7 +17,8 @@
                 <StackPanel x:Name="BetPanel" HorizontalAlignment="Left" Margin="5">
                     <TextBlock Text="Current Bet" FontWeight="Bold"/>
                     <TextBox Text="{Binding Path=CurrentBet, UpdateSourceTrigger=LostFocus}" 
-                             PreviewKeyDown="UIElement_OnPreviewKeyDown"/>
+                             PreviewKeyDown="UIElement_OnPreviewKeyDown"
+                             IsEnabled="{Binding Path=CanBet}"/>
                 </StackPanel>
             </DockPanel>
             <Grid Margin="10" Height="150">
@@ -30,17 +31,47 @@
                 <ScrollViewer Grid.Column="1">
                     <TextBlock x:Name="GameInfoTextBlock"
                                Text="{Binding Path=GameInfo}"
+                               Background="AliceBlue"
                                TextAlignment="Center"/>
                 </ScrollViewer>
                 <ScrollViewer Grid.Column="0">
-                    <TextBlock x:Name="PlayerCards"
-                               Text="PlayerCards"
-                               TextAlignment="Center"/>
+
+
+                    <StackPanel Background="LightGreen">
+                        <TextBlock x:Name="PlayerCardsHeader"
+                                   Text="Player Cards:"
+                                   FontSize="15" 
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   TextAlignment="Center"/>
+                        <TextBlock x:Name="PlayerCards"
+                                   Text="{Binding Path=PlayerCards, UpdateSourceTrigger=PropertyChanged}"
+                                   FontSize="12" 
+                                   Foreground="Blue"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+
+
+                    
+
+
+
+
                 </ScrollViewer>
                 <ScrollViewer Grid.Column="2">
-                    <TextBlock x:Name="DealerCards"
-                               Text="DealerCards"
-                               TextAlignment="Center"/>
+                    <StackPanel Background="LightCoral">
+                        <TextBlock x:Name="DealerCardsHeader"
+                                   Text="Dealer Cards:"
+                                   FontSize="15" 
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   TextAlignment="Center"/>
+                        <TextBlock x:Name="DealerCards"
+                                   Text="{Binding Path=DealerCards, UpdateSourceTrigger=PropertyChanged}"
+                                   FontSize="12" 
+                                   Foreground="Blue"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
                 </ScrollViewer>
             </Grid>
             <DockPanel>

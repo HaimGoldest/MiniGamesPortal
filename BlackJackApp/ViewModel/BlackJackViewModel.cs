@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using BlackJackApp.Commands;
 using BlackJackApp.Model;
 using BlackJackApp.Utils;
@@ -16,11 +9,9 @@ namespace BlackJackApp.ViewModel
 {
     public class BlackJackViewModel : BaseViewModel
     {
-        #region Private Fileds and Propeties
+        #region Fileds and Propeties
 
         private bool _isDealerTurn;
-
-
 
         private Deck _deck;
         public Deck Deck
@@ -61,8 +52,13 @@ namespace BlackJackApp.ViewModel
                 {
                     _currentBet = value;
                     HitAndStandEnable = true;
-                    UpdateHandValueUI();
-                    SetGameInfoText(GameStrings.BetChanged(value));
+                    CanBet = false;
+                    
+                    if (StartPlayerTurn())
+                    {
+                        SetGameInfoText(GameStrings.BetChanged(value));
+                    }
+                    
                 }
                 
                 OnPropertyChanged(nameof(CurrentBet));
@@ -91,6 +87,17 @@ namespace BlackJackApp.ViewModel
             }
         }
 
+        private string _playerCards;
+        public string PlayerCards
+        {
+            get => _playerCards;
+            set
+            {
+                _playerCards = value;
+                OnPropertyChanged(nameof(PlayerCards));
+            }
+        }
+
         private string _dealerHandValue;
         public string DealerHandValue
         {
@@ -99,6 +106,17 @@ namespace BlackJackApp.ViewModel
             {
                 _dealerHandValue = value;
                 OnPropertyChanged(nameof(DealerHandValue));
+            }
+        }
+
+        private string _dealerCards;
+        public string DealerCards
+        {
+            get => _dealerCards;
+            set
+            {
+                _dealerCards = value;
+                OnPropertyChanged(nameof(DealerCards));
             }
         }
 
@@ -128,6 +146,17 @@ namespace BlackJackApp.ViewModel
             }
         }
 
+        private bool _canBet;
+        public bool CanBet
+        {
+            get => _canBet;
+            set
+            {
+                _canBet = value;
+                OnPropertyChanged(nameof(CanBet));
+            }
+        }
+
         public HitCommand HitCommand { get; set; }
         public StandCommand StandCommand { get; set; }
 
@@ -152,7 +181,7 @@ namespace BlackJackApp.ViewModel
         {
             InitPlayers();
             SetGameInfoText(GameStrings.OpenStatement);
-            StartNewTurn();
+            StartNewRound();
         }
 
         #endregion
@@ -160,12 +189,13 @@ namespace BlackJackApp.ViewModel
         #region Game Methods
 
         /// <summary>
-        /// Starting new turn.
+        /// Starting new round.
         /// </summary>
-        private void StartNewTurn()
+        private void StartNewRound()
         {
             _isDealerTurn = false;
             HitAndStandEnable = false;
+            CanBet = true;
             CurrentBet = "0";
             TotalChips = User.Chips.Total.ToString();
 
@@ -173,12 +203,25 @@ namespace BlackJackApp.ViewModel
             {
                 AddGameInfoText(GameStrings.BetRequest);
             }
-            
+        }
+
+        /// <summary>
+        /// Starting player turn after bet was taken.
+        /// </summary>
+        /// <returns>Returns if new turn has been started.</returns>
+        private bool StartPlayerTurn()
+        {
             CardsDistribution();
+            DeleteCardsUI();
+            SetStartingUI();
+
             if (BustOrBlackJack(User))
             {
-                StartNewTurn();
+                StartNewRound();
+                return false;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -205,7 +248,7 @@ namespace BlackJackApp.ViewModel
         /// <param name="text">New text to add.</param>
         private void AddGameInfoText(string text)
         {
-            GameInfo = GameInfo + "\n\n" + text;
+            GameInfo = GameInfo + "\n" + text;
         }
 
         /// <summary>
@@ -215,14 +258,14 @@ namespace BlackJackApp.ViewModel
         {
             Deck = new Deck();
             Deck.Shuffle();
-            User.Hand = GetNewHand();
-            Dealer.Hand = GetNewHand();
+            User.Hand = GetNewHand(User);
+            Dealer.Hand = GetNewHand(Dealer);
         }
 
         /// <summary>
         /// Get new hand with 2 cards from the deck.
         /// </summary>
-        private Hand GetNewHand()
+        private Hand GetNewHand(Player player)
         {
             Hand hand = new Hand();
             hand.AddCard(Deck.Deal());
@@ -280,17 +323,25 @@ namespace BlackJackApp.ViewModel
             var newCard = Deck.Deal();
             hand.AddCard(newCard);
             hand.AdjustForAce();
-            UpdateHandValueUI();
-
-            if (player != Dealer || _isDealerTurn)
-            {
-                AddGameInfoText(GameStrings.ShowCard(player, newCard));
-            }
+            UpdateUI(player, newCard);
 
             if (player != Dealer && BustOrBlackJack(player))
             {
-                StartNewTurn();
+                StartNewRound();
             }
+        }
+        
+        public void SetStartingUI()
+        {
+            ShowStartingCardsInUI();
+            UpdateHandValueUI();
+        }
+
+        private void UpdateUI(Player player, Card card)
+        {
+            AddGameInfoText(GameStrings.NewCardInfo(player, card));
+            ShowCardInUI(player,card);
+            UpdateHandValueUI();
         }
 
         private void UpdateHandValueUI()
@@ -425,7 +476,7 @@ namespace BlackJackApp.ViewModel
                 }
             }
             
-            StartNewTurn();
+            StartNewRound();
         }
 
         /// <summary>
@@ -433,13 +484,11 @@ namespace BlackJackApp.ViewModel
         /// </summary>
         private void ShowDealerHand()
         {
-            SetGameInfoText(GameStrings.ShowDealerCardsHeader);
+            SetGameInfoText(GameStrings.DealerCardsHeader);
             foreach (var card in Dealer.Hand.Cards)
             {
-                AddGameInfoText(GameStrings.ShowCard(Dealer, card));
+                UpdateUI(Dealer, card);
             }
-
-            UpdateHandValueUI();
         }
 
         /// <summary>
@@ -509,6 +558,50 @@ namespace BlackJackApp.ViewModel
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Show cards of new turn in the UI
+        /// </summary>
+        private void ShowStartingCardsInUI()
+        {
+            if (Dealer.Hand.Cards.Count < 2 || User.Hand.Cards.Count < 2)
+            {
+                return;
+            }
+
+            var dealerCard = Dealer.Hand.Cards[0];
+            ShowCardInUI(Dealer, dealerCard);
+
+            var firstPlayerCard = User.Hand.Cards[0];
+            var secondPlayerCard = User.Hand.Cards[1];
+            ShowCardInUI(User, firstPlayerCard);
+            ShowCardInUI(User, secondPlayerCard);
+
+        }
+
+        /// <summary>
+        /// Show received card in the UI
+        /// </summary>
+        private void ShowCardInUI(Player player, Card card)
+        {
+            if (player == Dealer)
+            {
+                DealerCards = $"{DealerCards}\n{card.Suit} : {card.Rank}";
+                return;
+            }
+
+            AddGameInfoText(GameStrings.NewCardInfo(player, card));
+            PlayerCards = $"{PlayerCards}\n{card.Suit} : {card.Rank}";
+        }
+
+        /// <summary>
+        /// Delete Cards UI
+        /// </summary>
+        private void DeleteCardsUI()
+        {
+            PlayerCards = string.Empty;
+            DealerCards = string.Empty;
         }
 
         /// <summary>
