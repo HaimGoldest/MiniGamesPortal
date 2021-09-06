@@ -339,7 +339,6 @@ namespace BlackJackApp.ViewModel
 
         private void UpdateUI(Player player, Card card)
         {
-            AddGameInfoText(GameStrings.NewCardInfo(player, card));
             ShowCardInUI(player,card);
             UpdateHandValueUI();
         }
@@ -484,6 +483,7 @@ namespace BlackJackApp.ViewModel
         /// </summary>
         private void ShowDealerHand()
         {
+            DealerCards = string.Empty;
             SetGameInfoText(GameStrings.DealerCardsHeader);
             foreach (var card in Dealer.Hand.Cards)
             {
@@ -588,11 +588,13 @@ namespace BlackJackApp.ViewModel
             if (player == Dealer)
             {
                 DealerCards = $"{DealerCards}\n{card.Suit} : {card.Rank}";
-                return;
+            }
+            else
+            {
+                PlayerCards = $"{PlayerCards}\n{card.Suit} : {card.Rank}";
             }
 
             AddGameInfoText(GameStrings.NewCardInfo(player, card));
-            PlayerCards = $"{PlayerCards}\n{card.Suit} : {card.Rank}";
         }
 
         /// <summary>
