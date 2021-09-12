@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Controls\BaseControl.cs" />
+    <Compile Include="Utils\ScrollViewerHelper.cs" />
     <Compile Include="Utils\TextControlHelper.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Chips.cs" />

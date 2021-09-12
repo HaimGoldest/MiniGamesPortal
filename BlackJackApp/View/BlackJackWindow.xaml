@@ -28,15 +28,16 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <ScrollViewer Grid.Column="1">
+                <ScrollViewer x:Name="GameInfoScrollViewer" Grid.Column="1" 
+                              ScrollChanged="ScrollViewer_ScrollChanged">
                     <TextBlock x:Name="GameInfoTextBlock"
                                Text="{Binding Path=GameInfo}"
                                Background="AliceBlue"
                                TextAlignment="Center"/>
                 </ScrollViewer>
-                <ScrollViewer Grid.Column="0">
 
-
+                <ScrollViewer Grid.Column="0"
+                              ScrollChanged="ScrollViewer_ScrollChanged">
                     <StackPanel Background="LightGreen">
                         <TextBlock x:Name="PlayerCardsHeader"
                                    Text="Player Cards:"
@@ -50,15 +51,10 @@
                                    Foreground="Blue"
                                    TextAlignment="Center"/>
                     </StackPanel>
-
-
-                    
-
-
-
-
                 </ScrollViewer>
-                <ScrollViewer Grid.Column="2">
+
+                <ScrollViewer Grid.Column="2"
+                              ScrollChanged="ScrollViewer_ScrollChanged">
                     <StackPanel Background="LightCoral">
                         <TextBlock x:Name="DealerCardsHeader"
                                    Text="Dealer Cards:"

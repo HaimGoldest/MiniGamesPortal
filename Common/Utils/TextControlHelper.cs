@@ -24,21 +24,5 @@ namespace Common.Utils
             }
         }
 
-        //private void UserInputTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
-        //{
-
-        //    if (e.Key == Key.Enter)
-        //    {
-        //        // Move to a parent that can take focus
-        //        FrameworkElement parent = (FrameworkElement)_textBox.Parent;
-        //        while (parent != null && parent is IInputElement && !((IInputElement)parent).Focusable)
-        //        {
-        //            parent = (FrameworkElement)parent.Parent;
-        //        }
-
-        //        DependencyObject scope = FocusManager.GetFocusScope(_textBox);
-        //        FocusManager.SetFocusedElement(scope, parent as IInputElement);
-        //    }
-        //}
     }
 }
